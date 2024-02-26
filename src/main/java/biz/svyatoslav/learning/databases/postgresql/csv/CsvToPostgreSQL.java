@@ -94,9 +94,9 @@ public class CsvToPostgreSQL {
         String username = "postgres";
         String password = "123456";
         String csvFilePath = "data/heart_attack_prediction_dataset.csv";
-        Connection connection = null;
+
         try {
-            connection = DriverManager.getConnection(jdbcURL, username, password);
+            Connection connection = DriverManager.getConnection(jdbcURL, username, password);
 
             System.out.println();
             System.out.println("Processing COUNTRIES:");
@@ -293,6 +293,7 @@ public class CsvToPostgreSQL {
         Set<PatientInfo> patients = new HashSet<>();
         Reader in = new FileReader(filePath);
         CSVParser parser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+        PatientInfo patientInfo;
 
         for (CSVRecord record : parser) {
             String patientId = record.get("Patient ID");
@@ -302,11 +303,12 @@ public class CsvToPostgreSQL {
             int income = Integer.parseInt(record.get("Income"));
             String country = record.get("Country");
 
-            if (patients.contains(patientId)) {
+            patientInfo = new PatientInfo(patientId, age, sex, bmi, income, country);
+
+            if (patients.contains(patientInfo)) {
                 System.out.println("Warning: A patient with ID " + patientId + " already exists.");
             } else {
-                patients.add(new PatientInfo(patientId, age, sex, bmi, income, country));
-                patients.add(new PatientInfo(patientId, age, sex, bmi, income, country));
+                patients.add(patientInfo);
             }
 
         }
